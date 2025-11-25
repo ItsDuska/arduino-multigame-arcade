@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+
+// TODO: muuta tän nimi vec2i16 kun saadaan joystick toimimaan.
 struct Vec2u16
 {
     int16_t x;

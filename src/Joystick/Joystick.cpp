@@ -2,9 +2,11 @@
 #include <Arduino.h>
 
 
+
 // 0-100 degree range for joystick.
 constexpr uint8_t JOYSTICK_BEGIN_VAL = 0;
 constexpr uint8_t JOYSTICK_END_VAL = 100;
+constexpr int8_t JOYSTICK_DEADZONE_VAL = 7;
 
 Joystick::Joystick(u8 pinA, u8 pinB, u8 pinC)
 {
@@ -22,6 +24,16 @@ Vec2u16 Joystick::readPosition()
 {
     position.x = map(analogRead(pinA), 0, 1023, -100, 100);
     position.y = map(analogRead(pinB), 0, 1023, -100, 100);
+
+
+    if (abs(position.x) < JOYSTICK_DEADZONE_VAL) 
+    {
+        position.x = 0;
+    }
+    else if (abs(position.y) < JOYSTICK_DEADZONE_VAL)
+    {
+        position.y = 0;
+    }
     return position;
 }
 

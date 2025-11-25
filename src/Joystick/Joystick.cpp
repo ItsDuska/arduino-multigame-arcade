@@ -6,18 +6,16 @@
 constexpr uint8_t JOYSTICK_BEGIN_VAL = 0;
 constexpr uint8_t JOYSTICK_END_VAL = 100;
 
-
 Joystick::Joystick(u8 pinA, u8 pinB, u8 pinC)
 {
     this->pinA = pinA;
     this->pinB = pinB;
     this->pinC = pinC;
 
-    pinMode(pinA, OUTPUT);
-    pinMode(pinB, OUTPUT);
-    pinMode(pinC, INPUT);
+    pinMode(pinA, INPUT);      
+    pinMode(pinB, INPUT);        
 
-    digitalWrite(pinC, HIGH);
+    pinMode(pinC, INPUT_PULLUP);
 }
 
 Vec2u16 Joystick::readPosition()

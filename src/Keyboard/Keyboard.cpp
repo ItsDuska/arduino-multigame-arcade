@@ -9,23 +9,24 @@
 #define C3 44
 #define C4 45
 
-static constexpr uint8_t ROWS = 4;
-static constexpr uint8_t COLS = 4;
 
-static constexpr char keys[ROWS * COLS] = {
+static constexpr uint8_t KEYBOARD_ROWS = 4;
+static constexpr uint8_t KEYBOARD_COLS = 4;
+
+static constexpr char keys[KEYBOARD_ROWS * KEYBOARD_COLS] = {
  '1','2','3','A',
  '4','5','6','B',
  '7','8','9','C',
  '*','0','#','D'
 };
 
-static constexpr uint8_t rowPins[ROWS] = {R1, R2, R3, R4};
-static constexpr uint8_t colPins[COLS] = {C1, C2, C3, C4};
+static constexpr uint8_t rowPins[KEYBOARD_ROWS] = {R1, R2, R3, R4};
+static constexpr uint8_t colPins[KEYBOARD_COLS] = {C1, C2, C3, C4};
 
 static const uint8_t DEBOUNCE_COOLDOWN_MS = 50;
 
 Keyboard::Keyboard()
-  : keypad((uint8_t*)keys, rowPins, colPins, ROWS, COLS)
+  : keypad((uint8_t*)keys, rowPins, colPins, KEYBOARD_ROWS, KEYBOARD_COLS)
 {
   keypad.begin();
 }
@@ -54,7 +55,9 @@ void Keyboard::update()
 
     KeyEvent ev;
     ev.key = (char)e.bit.KEY;
-    ev.type = KeyEvent::Type::PRESS;
+    ev.type = (e.bit.EVENT == KEY_JUST_PRESSED)
+      ? KeyEvent::Type::PRESS
+      : KeyEvent::Type::RELEASE;
 
     uint8_t next = (head + 1) % MAX_EVENTS;
     if (next != tail) 

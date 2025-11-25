@@ -43,27 +43,29 @@ bool Joystick::isJoystickDown()
     return buttonDown;
 }
 
-// Convert 0-100 xy coords to wind direction enum.
 Joystick::Direction Joystick::convertPositionToDirection()
 {
-    // 50,50 == middle
-    int16_t dx = position.x - 50;
-    int16_t dy = position.y - 50;
+    int16_t dx = position.x; 
+    int16_t dy = position.y;
 
-    if (dx > -5 && dx < 5 && dy > -5 && dy < 5)
+    if (abs(dx) < JOYSTICK_DEADZONE_VAL) 
     {
-        return Direction::IDLE;
+        dx = 0;
+    }
+    if (abs(dy) < JOYSTICK_DEADZONE_VAL)
+    {
+        dy = 0;
     }
 
-    uint8_t right = (dx > 15);
-    uint8_t left = (dx < -15);
-    uint8_t up = (dy < -15);
-    uint8_t down = (dy > 15);
+    bool right = dx > 15;
+    bool left  = dx < -15;
+    bool up    = dy < -15;
+    bool down  = dy > 15;
 
     if (up && right) return Direction::UP_RIGHT;
-    if (up && left) return Direction::LEFT_UP;
+    if (up && left)  return Direction::LEFT_UP;
     if (down && right) return Direction::RIGHT_DOWN;
-    if (down && left) return Direction::DOWN_LEFT;
+    if (down && left)  return Direction::DOWN_LEFT;
 
     if (up) return Direction::UP;
     if (down) return Direction::DOWN;

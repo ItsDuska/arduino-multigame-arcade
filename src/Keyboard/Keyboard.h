@@ -5,7 +5,6 @@ class Keyboard
 {
 public:
     Keyboard();
-    void begin();
     void update();
 
     struct KeyEvent
@@ -29,4 +28,5 @@ private:
     KeyEvent buffer[MAX_EVENTS];
     uint8_t head = 0;
     uint8_t tail = 0;
+    uint32_t lastKeyPressTime = 0;
 };

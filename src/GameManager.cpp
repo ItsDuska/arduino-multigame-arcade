@@ -49,6 +49,8 @@ void GameManager::update()
   uint32_t deltaTime = currentTime - lastUpdateTime;
   lastUpdateTime = currentTime;
 
+  keyboard.update();
+
   switch (currentState)
   {
     case GameState::STATE_MENU:

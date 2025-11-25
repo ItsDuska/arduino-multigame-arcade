@@ -1,0 +1,60 @@
+#include "ButtonMash.h"
+
+ButtonMashGame::ButtonMashGame() : score(0), startTime(0), gameComplete(false), lastButtonState(false) {}
+
+
+void ButtonMashGame::init()
+{
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  score = 0;
+  startTime = millis();
+  gameComplete = false;
+  lastButtonState = digitalRead(BUTTON_PIN);
+
+  Serial.println("=== BUTTON MASH ===");
+  Serial.println("Press button as fast as you can!");
+}
+
+void ButtonMashGame::update(uint32_t deltaTime, Keyboard& keyboard, Joystick& Joystick)
+{
+  if (gameComplete)
+  {
+    return;
+  }
+
+  if (millis() - startTime >= GAME_DURATION)
+  {
+    gameComplete = true;
+    Serial.print("Final Score: ");
+    Serial.println(score);
+    return;
+  }
+
+  while (keyboard.hasEvent())
+  {
+    Keyboard::KeyEvent keyEvent = keyboard.nextEvent();
+
+    if (keyEvent.type == Keyboard::KeyEvent::Type::PRESS)
+    {
+      score++;
+      Serial.print("Score: ");
+      Serial.println(score);
+    }
+  }
+}
+
+
+void ButtonMashGame::cleanup()
+{
+  pinMode(BUTTON_PIN, INPUT);
+}
+
+bool ButtonMashGame::isComplete()
+{
+  return gameComplete;
+}
+
+const char* ButtonMashGame::getName()
+{
+  return "Button Mash";
+}

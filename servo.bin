@@ -1,0 +1,77 @@
+
+#include <Arduino.h> 
+#include <Servo.h>
+#include <Wire.h>
+
+Servo servo;
+
+constexpr int MIN_DEG = 500;
+constexpr int MAX_DEG = 2500;
+
+constexpr uint8_t servoPin = 9;
+constexpr uint8_t feedbackPin = A1;
+constexpr uint16_t SECOND_DELAY = 1000u;
+
+int targetAngle = 0;
+int step = 1;
+int reading = 0;
+
+uint32_t prevTime = 0;
+int prevAngle = 0;
+
+
+float mapf(float x, float in_min, float in_max, float out_min, float out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+long readPosition()
+{
+  float voltage = analogRead(A1) * (5.0 / 1023);
+  return mapf(voltage, 0.13, 2.52, 0, 270);
+}
+
+void moveAndMeasure(int angle) 
+{
+  servo.write(angle);
+  delay(20); // emt auttaako tää mitään mutta buh 
+
+  const int currentAngle = readPosition();
+  const uint32_t currentTime = millis();
+  const float deltaTime = (currentTime - prevTime) / SECOND_DELAY;
+
+  if (deltaTime > 0) 
+  {
+    const float speed = (currentAngle - prevAngle) / deltaTime; // astetta/sek
+    Serial.print("Speed: "); 
+    Serial.print(speed);
+  }
+
+  prevAngle = currentAngle;
+  prevTime = currentTime;
+}
+
+void setup() 
+{
+  Serial.begin(9600);
+  servo.attach(servoPin,MIN_DEG, MAX_DEG);
+
+  servo.write(0);
+  delay(SECOND_DELAY);
+  prevTime = millis();
+  prevAngle = readPosition();
+}
+
+void loop()
+{
+  for (targetAngle = 0; targetAngle <= 180; targetAngle += step) 
+  {
+    moveAndMeasure(targetAngle);
+  }
+  for (targetAngle = 180; targetAngle >= 0; targetAngle -= step)
+  {
+    moveAndMeasure(targetAngle);
+  }
+  
+  delay(1500);
+}

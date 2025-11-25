@@ -1,0 +1,16 @@
+profiles:
+  profile-1761638469289:
+    fqbn: arduino:avr:mega:cpu=atmega2560
+    platforms:
+      - platform: arduino:avr (1.8.6)
+    libraries:
+      - Servo (1.2.2)
+      - DFRobot_RGBLCD1602 (2.0.1)
+    programmer: ""
+    port: ""
+    port_config:
+      baudrate: "115200"
+      bits: "8"
+      parity: none
+      stop_bits: one
+default_profile: profile-1761638469289

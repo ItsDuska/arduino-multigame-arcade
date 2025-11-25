@@ -35,6 +35,13 @@ void FallingBlocks::update(uint32_t deltaTime, Keyboard & keyboard, Joystick & J
     checkCollision();
 }
 
+
+void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX& gfx)
+{
+
+}
+
+
 void FallingBlocks::cleanup()
 {
 }

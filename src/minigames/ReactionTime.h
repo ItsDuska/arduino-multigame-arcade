@@ -8,6 +8,7 @@ public:
   ReactionTimeGame();
   void init() override;
   void update(uint32_t deltaTime, Keyboard& keyboard, Joystick& joystick) override;
+  void render(uint32_t deltaTime, Arduino_GFX& gfx) override;
   void cleanup() override;
   bool isComplete() override;
   const char* getName() override;

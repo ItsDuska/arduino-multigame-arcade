@@ -63,6 +63,10 @@ void JoystickSpinGame::update(uint32_t deltaTime, Keyboard& Keyboard, Joystick& 
     }
 }
 
+void JoystickSpinGame::render(uint32_t deltaTime, Arduino_GFX &gfx)
+{
+}
+
 void JoystickSpinGame::cleanup()
 {
     // Nothing necessary here

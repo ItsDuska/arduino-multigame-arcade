@@ -7,7 +7,8 @@ public:
     JoystickSpinGame();
 
     void init();
-    void update(uint32_t deltaTime, Keyboard& keyboard, Joystick& joystick);
+    void update(uint32_t deltaTime, Keyboard& keyboard, Joystick& joystick) override;
+    void render(uint32_t deltaTime, Arduino_GFX& gfx) override;
     void cleanup();
 
     bool isComplete();

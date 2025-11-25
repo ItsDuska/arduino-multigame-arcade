@@ -3,7 +3,7 @@
 
 #include "GameInterface.h"
 
-// Temp peli Testi peli
+// Temp peli Testi peli. Ideana testata vaan että toimiiko kaikki.
 
 class ButtonMashGame : public Game
 {
@@ -22,6 +22,7 @@ public:
   void init() override;
 
   void update(uint32_t deltaTime, Keyboard& keyboard, Joystick& Joystick) override;
+  void render(uint32_t deltaTime, Arduino_GFX& gfx) override;
 
   void cleanup() override;
 

@@ -9,7 +9,7 @@
 #include "Joystick/Joystick.h"
 
 
-// BEHOLD! Kauhee määrä incluje, joista en oo vielä jaksanu katsoa että mikkä on turhia ja mikkä eivät. jotenka...
+// BEHOLD! Kauhee määrä includeja, joista en oo vielä jaksanu katsoa että mikkä on turhia ja mikkä eivät. jotenka...
 // TODO: FIX ME 
 #include <Arduino_DataBus.h>
 #include <Arduino_G.h>
@@ -22,7 +22,7 @@
 #include <gfxfont.h>
 
 
-enum SystemState 
+enum class GameState : char
 {
   STATE_MENU,
   STATE_GAME_INIT,
@@ -36,6 +36,8 @@ class GameManager
 
 public:
   GameManager();
+  ~GameManager();
+
 
   void init();
 
@@ -47,7 +49,7 @@ private:
   void cleanupCurrentGame();
 
 private:
-  SystemState currentState;
+  GameState currentState;
   uint8_t currentGameIndex;
   uint8_t totalGames;
   Game* activeGame;

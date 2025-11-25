@@ -12,7 +12,7 @@
 #define JOYSTICK_PIN_C 2
 
 GameManager::GameManager() :
-  currentState(STATE_MENU),
+  currentState(GameState::STATE_MENU),
   currentGameIndex(0),
   totalGames(GAME_COUNT),
   activeGame(nullptr),
@@ -21,16 +21,26 @@ GameManager::GameManager() :
 {
 }
 
+GameManager::~GameManager()
+{
+  delete gfx;
+  delete bus;
+}
+
 void GameManager::init()
 {
-	bus = new Arduino_SWPAR8(PIN_RS, PIN_CS, PIN_WR, PIN_RD, A9, A8, A15, A14, A13, A12, A11, A10);
-	gfx = new Arduino_R61529(bus, PIN_RST, 0, false);
+  bus = new Arduino_SWPAR8(PIN_RS, PIN_CS, PIN_WR, PIN_RD, A9, A8, A15, A14, A13, A12, A11, A10);
+  gfx = new Arduino_R61529(bus, PIN_RST, 0, false);
+
+  gfx->begin();
+  gfx->fillScreen(RGB565_BLACK);
 
   Serial.println("=== Multi-Game Arcade ===");
   Serial.print("Total games: ");
   Serial.println(totalGames);
-  currentState = STATE_GAME_INIT;
-}
+  currentState = GameState::STATE_GAME_INIT;
+  
+  }
 
 
 void GameManager::update()
@@ -41,45 +51,46 @@ void GameManager::update()
 
   switch (currentState)
   {
-    case STATE_MENU:
+    case GameState::STATE_MENU:
     	// add main menu here
-      currentState = STATE_GAME_INIT;
+      currentState = GameState::STATE_GAME_INIT;
       break;
 
-    case STATE_GAME_INIT:
+    case GameState::STATE_GAME_INIT:
       initNextGame();
       break;
 
-    case STATE_GAME_RUNNING:
+    case GameState::STATE_GAME_RUNNING:
       if (activeGame)
       {
         activeGame->update(deltaTime, keyboard, Joystick);
+        activeGame->render(deltaTime, *gfx);
 
         if (activeGame->isComplete())
         {
-          currentState = STATE_GAME_OVER;
+          currentState = GameState::STATE_GAME_OVER;
         }
       }
       break;
 
-    case STATE_GAME_OVER:
+    case GameState::STATE_GAME_OVER:
       cleanupCurrentGame();
       currentGameIndex++;
 
       if (currentGameIndex >= totalGames)
       {
-        currentState = STATE_ALL_COMPLETE;
+        currentState = GameState::STATE_ALL_COMPLETE;
       }
       else
       {
-        currentState = STATE_GAME_INIT;
+        currentState = GameState::STATE_GAME_INIT;
       }
       break;
 
-    case STATE_ALL_COMPLETE:
+    case GameState::STATE_ALL_COMPLETE:
 
       currentGameIndex = 0;
-      currentState = STATE_GAME_INIT;
+      currentState = GameState::STATE_GAME_INIT;
       break;
   }
 }
@@ -97,12 +108,12 @@ void GameManager::initNextGame()
   if (activeGame)
   {
     activeGame->init();
-    currentState = STATE_GAME_RUNNING;
+    currentState = GameState::STATE_GAME_RUNNING;
   }
   else
   {
     Serial.println("ERROR: Failed to create game");
-    currentState = STATE_ALL_COMPLETE;
+    currentState = GameState::STATE_ALL_COMPLETE;
   }
 }
 

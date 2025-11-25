@@ -37,36 +37,41 @@ void ReactionTimeGame::update(uint32_t deltaTime, Keyboard& keyboard, Joystick& 
 
     switch (phase)
     {
-        case WAITING:
-            if (millis() - phaseStartTime >= waitDuration)
+    case WAITING:
+        if (millis() - phaseStartTime >= waitDuration)
+        {
+            digitalWrite(LED_PIN, HIGH);
+            phase = LED_ON;
+            phaseStartTime = millis();
+        }
+        break;
+
+    case LED_ON:
+        while (keyboard.hasEvent())
+        {
+            Keyboard::KeyEvent ev = keyboard.nextEvent();
+            if (ev.type == Keyboard::KeyEvent::Type::PRESS && ev.key == REACT_KEY)
             {
-                digitalWrite(LED_PIN, HIGH);
-                phase = LED_ON;
-                phaseStartTime = millis();
+                reactionTime = millis() - phaseStartTime;
+                Serial.print(F("Reaction time: "));
+                Serial.print(reactionTime);
+                Serial.println(F("ms"));
+
+                phase = COMPLETE;
+                gameComplete = true;
+                break;
             }
-            break;
+        }
+        break;
 
-        case LED_ON:
-            while (keyboard.hasEvent())
-            {
-                Keyboard::KeyEvent ev = keyboard.nextEvent();
-                if (ev.type == Keyboard::KeyEvent::Type::PRESS && ev.key == REACT_KEY)
-                {
-                    reactionTime = millis() - phaseStartTime;
-                    Serial.print(F("Reaction time: "));
-                    Serial.print(reactionTime);
-                    Serial.println(F("ms"));
-
-                    phase = COMPLETE;
-                    gameComplete = true;
-                    break;
-                }
-            }
-            break;
-
-        case COMPLETE:
-            break;
+    case COMPLETE:
+        break;
     }
+}
+
+void render(uint32_t deltaTime, Arduino_GFX& gfx)
+{
+    
 }
 
 

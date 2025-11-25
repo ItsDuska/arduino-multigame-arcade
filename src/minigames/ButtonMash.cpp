@@ -41,8 +41,13 @@ void ButtonMashGame::update(uint32_t deltaTime, Keyboard& keyboard, Joystick& Jo
       Serial.println(score);
     }
   }
+
 }
 
+void ButtonMashGame::render(uint32_t deltaTime, Arduino_GFX& gfx)
+{
+
+}
 
 void ButtonMashGame::cleanup()
 {

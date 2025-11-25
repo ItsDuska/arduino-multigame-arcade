@@ -3,7 +3,7 @@
 
 
 #include "../../mock/ArduinoWrapper.h"
-#include "../KeyBoard/Keyboard.h"
+#include "../Keyboard/Keyboard.h"
 #include "../Joystick/Joystick.h"
 #include <Arduino_GFX.h>
 

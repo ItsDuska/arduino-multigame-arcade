@@ -127,6 +127,7 @@ void FallingBlocks::handlePlayerInput(Keyboard& keyboard)
         }
     }
 
+    
     // lisää joystick support tähän 
 }
 

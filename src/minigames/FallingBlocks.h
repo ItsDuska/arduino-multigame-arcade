@@ -33,7 +33,6 @@ private:
     void handlePlayerInput(Keyboard& keyboard);
 
 
-
 private:
     Obstacle obstacles[MAX_OBSTACLES];
     uint32_t lastSpawnTime;

@@ -22,8 +22,8 @@ Joystick::Joystick(u8 pinA, u8 pinB, u8 pinC)
 
 Vec2u16 Joystick::readPosition()
 {
-    position.x = map(analogRead(this->pinA), 0, 1023, JOYSTICK_BEGIN_VAL, JOYSTICK_END_VAL);
-    position.y = map(analogRead(this->pinB), 0, 1023, JOYSTICK_BEGIN_VAL, JOYSTICK_END_VAL);
+    position.x = map(analogRead(pinA), 0, 1023, -100, 100);
+    position.y = map(analogRead(pinB), 0, 1023, -100, 100);
     return position;
 }
 

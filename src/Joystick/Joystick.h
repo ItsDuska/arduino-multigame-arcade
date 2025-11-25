@@ -3,8 +3,8 @@
 
 struct Vec2u16
 {
-    uint16_t x;
-    uint16_t y;
+    int16_t x;
+    int16_t y;
 };
 
 // Position 50, 50 is 0,0

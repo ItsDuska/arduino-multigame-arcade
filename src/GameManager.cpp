@@ -26,12 +26,14 @@ void GameManager::init() {
   gfx = new Arduino_R61529(bus, PIN_RST, 0, false);
 
   gfx->begin();
+  gfx->setRotation(1);
+  gfx->invertDisplay(false);
   gfx->fillScreen(RGB565_BLACK);
 
   Serial.println("=== Multi-Game Arcade ===");
   Serial.print("Total games: ");
   Serial.println(totalGames);
-  currentState = GameState::STATE_GAME_INIT;
+  currentState = GameState::STATE_MENU;
 }
 
 void GameManager::update() {
@@ -43,13 +45,14 @@ void GameManager::update() {
 
   switch (currentState) {
   case GameState::STATE_MENU:
+    Serial.println("Displaying Main Menu");
     // add main menu here
     gfx->setCursor(100, 100);
     gfx->setTextColor(RGB565_WHITE, RGB565_BLACK);
     gfx->setTextSize(2);
-    gfx->setTextWrap(true);
     gfx->print("Main Menu");
-    currentState = GameState::STATE_GAME_INIT;
+    // Testauksen ajaksi
+    delay(100);
     break;
 
   case GameState::STATE_GAME_INIT:

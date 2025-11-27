@@ -57,7 +57,7 @@ void ReactionTimeGame::update(uint32_t deltaTime, Keyboard &keyboard,
   }
 }
 
-void render(uint32_t deltaTime, Arduino_GFX &gfx) {}
+void ReactionTimeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {}
 
 void ReactionTimeGame::cleanup() {
   digitalWrite(LED_PIN, LOW);

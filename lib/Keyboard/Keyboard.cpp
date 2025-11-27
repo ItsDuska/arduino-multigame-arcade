@@ -1,5 +1,11 @@
 #include "Keyboard.h"
 
+#ifdef TARGET_PC
+#include "MockInputState.h"
+#else
+#include <Arduino.h>
+#endif
+
 #define R1 49
 #define R2 48
 #define R3 47
@@ -27,6 +33,26 @@ Keyboard::Keyboard()
 }
 
 void Keyboard::update() {
+#ifdef TARGET_PC
+  if (MockInputState::newKeyAvailable) {
+    const uint32_t currentTime = millis();
+
+    lastKeyPressTime = currentTime;
+
+    char keyChar = MockInputState::lastKeyPressed;
+    MockInputState::newKeyAvailable = false;
+
+    KeyEvent ev;
+    ev.key = keyChar;
+    ev.type = KeyEvent::Type::PRESS;
+
+    uint8_t next = (head + 1) % MAX_EVENTS;
+    if (next != tail) {
+      buffer[head] = ev;
+      head = next;
+    }
+  }
+#else
   keypad.tick();
 
   while (keypad.available()) {
@@ -51,6 +77,7 @@ void Keyboard::update() {
       head = next;
     }
   }
+#endif
 }
 
 bool Keyboard::hasEvent() const { return head != tail; }

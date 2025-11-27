@@ -1,24 +1,11 @@
-#ifndef GAME_MANAGER_H
-#define GAME_MANAGER_H
+#pragma once
+#include <HardwareWrapper.h>
 
 #include "minigames/GameInterface.h"
 #include "minigames/GameRegistry.h"
 
 #include <Joystick.h>
 #include <Keyboard.h>
-
-// BEHOLD! Kauhee määrä includeja, joista en oo vielä jaksanu katsoa että mikkä
-// on turhia ja mikkä eivät. jotenka...
-// TODO: FIX ME
-#include <Arduino_DataBus.h>
-#include <Arduino_G.h>
-#include <Arduino_GFX.h>
-#include <Arduino_GFX_Library.h>
-#include <Arduino_OLED.h>
-#include <Arduino_TFT.h>
-#include <Arduino_TFT_18bit.h>
-#include <YCbCr2RGB.h>
-#include <gfxfont.h>
 
 enum class GameState : char {
   STATE_MENU,
@@ -35,26 +22,27 @@ public:
   ~GameManager();
 
   void init();
-
   void update();
 
 private:
   void initNextGame();
-
   void cleanupCurrentGame();
 
 private:
   GameState currentState;
   uint8_t currentGameIndex;
   uint8_t totalGames;
+
+  // Varmista että tämä vastaa luokan nimeä GameInterface.h tiedostossa
   Game *activeGame;
+
   uint32_t lastUpdateTime;
 
+  // Nämä tyypit tulevat nyt HardwareWrapper.h:n kautta
+  // (Joko oikeina tai Mock-versioina)
   Arduino_DataBus *bus;
   Arduino_GFX *gfx;
 
   Keyboard keyboard;
-  Joystick Joystick;
+  Joystick joystick;
 };
-
-#endif

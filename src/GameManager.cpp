@@ -13,7 +13,7 @@
 GameManager::GameManager()
     : currentState(GameState::STATE_MENU), currentGameIndex(0),
       totalGames(GAME_COUNT), activeGame(nullptr), lastUpdateTime(0),
-      Joystick(JOYSTICK_PIN_A, JOYSTICK_PIN_B, JOYSTICK_PIN_C) {}
+      joystick(JOYSTICK_PIN_A, JOYSTICK_PIN_B, JOYSTICK_PIN_C) {}
 
 GameManager::~GameManager() {
   delete gfx;
@@ -60,7 +60,7 @@ void GameManager::update() {
 
   case GameState::STATE_GAME_RUNNING:
     if (activeGame) {
-      activeGame->update(deltaTime, keyboard, Joystick);
+      activeGame->update(deltaTime, keyboard, joystick);
       activeGame->render(deltaTime, *gfx);
 
       if (activeGame->isComplete()) {
@@ -83,7 +83,7 @@ void GameManager::update() {
   case GameState::STATE_ALL_COMPLETE:
 
     currentGameIndex = 0;
-    currentState = GameState::STATE_GAME_INIT;
+    currentState = GameState::STATE_MENU;
     break;
   }
 }

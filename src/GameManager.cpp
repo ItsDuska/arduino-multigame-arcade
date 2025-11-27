@@ -27,7 +27,6 @@ void GameManager::init() {
 
   gfx->begin();
   gfx->setRotation(1);
-  gfx->invertDisplay(false);
   gfx->fillScreen(RGB565_BLACK);
 
   Serial.println("=== Multi-Game Arcade ===");

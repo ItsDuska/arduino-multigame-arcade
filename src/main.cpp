@@ -31,20 +31,17 @@ char MockInputState::lastKeyPressed = 0;
 bool MockInputState::newKeyAvailable = false;
 
 int main(int argc, char *argv[]) {
-  // 1. Alusta SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL Init failed: %s\n", SDL_GetError());
     return 1;
   }
 
-  // 2. Kutsu Arduinon setup()
   setup();
 
   bool quit = false;
   SDL_Event e;
   const Uint8 *kbState = SDL_GetKeyboardState(NULL);
 
-  // 3. Simulaattorin "Hardware Loop"
   while (!quit) {
     uint32_t startTicks = SDL_GetTicks();
 
@@ -53,18 +50,85 @@ int main(int argc, char *argv[]) {
       if (e.type == SDL_QUIT)
         quit = true;
 
-      // Keypad simulaatio (NumPad tai numerot)
+      // Keypad simulaatio
       if (e.type == SDL_KEYDOWN) {
-        char key = 0;
-        if (e.key.keysym.sym >= SDLK_0 && e.key.keysym.sym <= SDLK_9) {
-          key = '0' + (e.key.keysym.sym - SDLK_0);
-        } else if (e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_d) {
-          key = 'A' + (e.key.keysym.sym - SDLK_a);
+        char mappedKey = 0;
+        switch (e.key.keysym.sym) {
+        // --- RIVI 1 ---
+        case SDLK_1:
+          mappedKey = '1';
+          break;
+        case SDLK_2:
+          mappedKey = '2';
+          break;
+        case SDLK_3:
+          mappedKey = '3';
+          break;
+        case SDLK_4:
+          mappedKey = 'A';
+          break;
+
+        // --- RIVI 2 ---
+        case SDLK_q:
+          mappedKey = '4';
+          break;
+        case SDLK_w:
+          mappedKey = '5';
+          break;
+        case SDLK_e:
+          mappedKey = '6';
+          break;
+        case SDLK_r:
+          mappedKey = 'B';
+          break;
+
+        // --- RIVI 3 ---
+        case SDLK_a:
+          mappedKey = '7';
+          break;
+        case SDLK_s:
+          mappedKey = '8';
+          break;
+        case SDLK_d:
+          mappedKey = '9';
+          break;
+        case SDLK_f:
+          mappedKey = 'C';
+          break;
+
+        // --- RIVI 4 ---
+        case SDLK_z:
+          mappedKey = '*';
+          break;
+        case SDLK_x:
+          mappedKey = '0';
+          break;
+        case SDLK_c:
+          mappedKey = '#';
+          break;
+        case SDLK_v:
+          mappedKey = 'D';
+          break;
+
+        // --- NUMPAD VAIHTOEHDOT (Jos haluat käyttää numpadia) ---
+        case SDLK_KP_1:
+          mappedKey = '1';
+          break;
+        case SDLK_KP_ENTER:
+          mappedKey = '#';
+          break;
+
+        default:
+          break; // Muut napit jätetään huomiotta
         }
 
-        if (key != 0) {
-          MockInputState::lastKeyPressed = key;
+        // Jos nappi löytyi listasta, välitä se eteenpäin
+        if (mappedKey != 0) {
+          MockInputState::lastKeyPressed = mappedKey;
           MockInputState::newKeyAvailable = true;
+
+          // Debuggaus: Näet konsolissa mitä painettiin
+          printf("PC Key: %d -> Mapped to: %c\n", e.key.keysym.sym, mappedKey);
         }
       }
     }

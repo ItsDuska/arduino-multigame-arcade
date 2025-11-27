@@ -26,7 +26,7 @@ void JoystickSpinGame::update(uint32_t deltaTime, Keyboard &Keyboard,
     return;
   }
 
-  joystick.readPosition();
+  joystick.update();
   auto dir = joystick.convertPositionToDirection();
 
   switch (currentStage) {

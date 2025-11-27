@@ -18,7 +18,7 @@ public:
   Joystick(uint8_t pinA, uint8_t pinB, uint8_t pinC);
 
   Vec2i16 getPosition(void);
-  void readPosition(void);
+  void update(void);
   bool isJoystickDown();
 
   enum class Direction {

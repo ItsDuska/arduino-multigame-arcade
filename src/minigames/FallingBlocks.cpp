@@ -86,9 +86,7 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
     }
   }
 
-  // mieluiten joystick.readPositions();
-  // sitten getPostion();
-  joystick.readPosition();
+  joystick.update();
   joystick.getPosition();
   Joystick::Direction dir = joystick.convertPositionToDirection();
 

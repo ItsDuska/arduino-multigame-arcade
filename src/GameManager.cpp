@@ -41,6 +41,7 @@ void GameManager::update() {
   lastUpdateTime = currentTime;
 
   keyboard.update();
+  joystick.update();
 
   switch (currentState) {
   case GameState::STATE_MENU:

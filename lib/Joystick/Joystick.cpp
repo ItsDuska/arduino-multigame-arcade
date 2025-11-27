@@ -1,4 +1,5 @@
 #include "Joystick.h"
+#include "MockArduino.h"
 
 #ifdef TARGET_PC
 #include "MockInputState.h"
@@ -22,7 +23,7 @@ Joystick::Joystick(uint8_t pinA, uint8_t pinB, uint8_t pinC) {
   pinMode(pinC, INPUT_PULLUP);
 }
 
-void Joystick::readPosition() {
+void Joystick::update() {
   int rawX, rawY;
 
 #ifdef TARGET_PC
@@ -34,7 +35,7 @@ void Joystick::readPosition() {
 #endif
 
   position.x = map(rawX, 0, 1023, JOYSTICK_BEGIN_VAL, JOYSTICK_END_VAL);
-  position.y = map(rawY, 0, 1023, -JOYSTICK_BEGIN_VAL, JOYSTICK_END_VAL);
+  position.y = map(rawY, 0, 1023, JOYSTICK_BEGIN_VAL, JOYSTICK_END_VAL);
 
   if (abs(position.x) < JOYSTICK_DEADZONE_VAL) {
     position.x = 0;

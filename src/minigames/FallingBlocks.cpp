@@ -57,13 +57,12 @@ void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
   // poistetaan ensin vain vanhat piirrokset.
   // Poistetaan vain vanhat
   for (int i = 0; i < MAX_OBSTACLES; i++) {
-      if (obstaclesLastPos[i].active) {
-          gfx.fillRect(obstaclesLastPos[i].x * cellWidth,
-                       obstaclesLastPos[i].y * cellHeight,
-                       cellWidth, cellHeight, COLOR_BG);
-      }
+    if (obstaclesLastPos[i].active) {
+      gfx.fillRect(obstaclesLastPos[i].x * cellWidth,
+                   obstaclesLastPos[i].y * cellHeight, cellWidth, cellHeight,
+                   COLOR_BG);
+    }
   }
-
 
   // Sitten piirretään uudet
   for (int i = 0; i < MAX_OBSTACLES; i++) {
@@ -80,7 +79,6 @@ void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
   // Piirretään pelaaja.
   gfx.fillRect(playerX * cellWidth, (ROWS - 1) * cellHeight, cellWidth,
                cellHeight, COLOR_PLAYER);
-
 
   // siivotaan teksti.
   gfx.fillRect(0, 0, 50, 20, COLOR_BG);

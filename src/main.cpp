@@ -18,7 +18,7 @@ void setup() {
   gameManager.init();
 }
 
-void loop() {gameManager.update(); }
+void loop() { gameManager.update(); }
 
 // --- TÄMÄ OSA KÄÄNNETÄÄN VAIN PC:LLÄ ---
 #ifdef TARGET_PC

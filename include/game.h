@@ -5,7 +5,8 @@ Jokaisen pelin pitää sulkeutuessa palauttaa score ja bool
  arvo siitä että kuoltiinko vai ei.
 ----------------------
 
-interupt ajastin pelin jokaiselle minipelille eli sulla on vaan n määrä aikaa, sitten peli loppuu
+interupt ajastin pelin jokaiselle minipelille eli sulla on vaan n määrä aikaa,
+sitten peli loppuu
 
  */
 /*
@@ -29,11 +30,13 @@ enum class State : u8
 };
 
 
-// peli staten sisällä on bool hasWon state. Katsomme vasta update functiossa sen
+// peli staten sisällä on bool hasWon state. Katsomme vasta update functiossa
+sen
 // onko peli voitettu vai ei, koska interupt voi tapahtua milloin vain.
 
 
-// näiden pitää olla func pointereita ja sitten tallennamme listna minipelejä tähän.
+// näiden pitää olla func pointereita ja sitten tallennamme listna minipelejä
+tähän.
 
 
 

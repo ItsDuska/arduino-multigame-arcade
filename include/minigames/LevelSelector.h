@@ -15,5 +15,5 @@ public:
   private:
     uint8_t currentLineIndex;
     GameManager *gameManager;
-    bool isDirty = false;
+    bool isDirty = true;
 };

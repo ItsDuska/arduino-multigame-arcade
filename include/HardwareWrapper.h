@@ -7,6 +7,7 @@
 #include <MockDisplayDrivers.h> // Korvaa Arduino_DataBus ja Arduino_R61529
 #include <MockEEPROM.h>         // Korvaa EEPROM
 #include <MockKeypad.h>         // Korvaa Adafruit_Keypad
+#include <MockTimerOne.h>       // Korvaa TimerOne
 #include <SDL2/SDL.h>
 
 #ifndef RGB565_BLACK

@@ -24,6 +24,8 @@ public:
   bool hasEvent() const;
   KeyEvent nextEvent();
 
+  bool menuPressed = false;
+
 private:
   Adafruit_Keypad keypad;
 

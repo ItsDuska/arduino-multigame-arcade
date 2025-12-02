@@ -25,7 +25,7 @@ static constexpr char keys[KEYBOARD_ROWS * KEYBOARD_COLS] = {
 static constexpr uint8_t rowPins[KEYBOARD_ROWS] = {R1, R2, R3, R4};
 static constexpr uint8_t colPins[KEYBOARD_COLS] = {C1, C2, C3, C4};
 
-static const uint8_t DEBOUNCE_COOLDOWN_MS = 50;
+static const uint8_t MENU_KEY = '0';
 
 Keyboard::Keyboard()
     : keypad((uint8_t *)keys, rowPins, colPins, KEYBOARD_ROWS, KEYBOARD_COLS) {
@@ -41,6 +41,9 @@ void Keyboard::update() {
 
     char keyChar = MockInputState::lastKeyPressed;
     MockInputState::newKeyAvailable = false;
+
+    if (keyChar == MENU_KEY)
+      menuPressed = true;
 
     KeyEvent ev;
     ev.key = keyChar;
@@ -59,6 +62,10 @@ void Keyboard::update() {
 
   while (keypad.available()) {
     keypadEvent e = keypad.read();
+
+    if (e.bit.EVENT == KEY_JUST_PRESSED && (char)e.bit.KEY == MENU_KEY) {
+      menuPressed = true;
+    }
 
     const uint32_t currentTime = millis();
 

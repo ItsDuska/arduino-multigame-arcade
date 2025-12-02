@@ -51,6 +51,22 @@ void GameManager::update() {
   keyboard.update();
   joystick.update();
 
+  if (keyboard.menuPressed) {
+    keyboard.menuPressed = false; // Nollataan lippu heti
+
+    // Jos emme ole jo valikossa, mennään sinne
+    if (currentState != GameState::STATE_MENU) {
+      cleanupCurrentGame();
+
+      // Aseta tila päävalikkoon
+      currentState = GameState::STATE_MENU;
+
+      // Nyt kun peli on tuhottu, ei kannata jatkaa update-looppia tässä
+      // framessa ettei yritetä päivittää olematonta peliä.
+      return;
+    }
+  }
+
   switch (currentState) {
   case GameState::STATE_MENU:
     gfx->fillScreen(RGB565_BLACK);
@@ -59,13 +75,12 @@ void GameManager::update() {
     lostGameCount = 0;
     currentState = GameState::STATE_GAME_RUNNING;
     break;
-    case GameState::STATE_LEVEL_SELECT:
-      gfx->fillScreen(RGB565_BLACK);
-      activeGame = new LevelSelector(this);
-      activeGame->init(*gfx);
-      currentState = GameState::STATE_GAME_RUNNING;
-      break;
-
+  case GameState::STATE_LEVEL_SELECT:
+    gfx->fillScreen(RGB565_BLACK);
+    activeGame = new LevelSelector(this);
+    activeGame->init(*gfx);
+    currentState = GameState::STATE_GAME_RUNNING;
+    break;
 
   case GameState::STATE_GAME_INIT:
     initNextGame();
@@ -73,8 +88,7 @@ void GameManager::update() {
 
   case GameState::STATE_GAME_RUNNING:
     processActiveGameFrame(deltaTime);
-    if (overrideState != GameState::STATE_NULL)
-    {
+    if (overrideState != GameState::STATE_NULL) {
       currentState = overrideState;
       overrideState = GameState::STATE_NULL;
     }
@@ -82,11 +96,9 @@ void GameManager::update() {
 
   case GameState::STATE_GAME_OVER:
     Serial.print("GAME OVER\n");
-    if (overrideState != GameState::STATE_NULL)
-    {
+    if (overrideState != GameState::STATE_NULL) {
       currentState = overrideState;
-    }
-    else{
+    } else {
       currentState = GameState::STATE_GAME_INIT;
     }
     updateScore();
@@ -165,21 +177,18 @@ void GameManager::updateScore() {
 }
 
 void GameManager::overrideGameIndex(uint8_t gameIndex, bool isMenu) {
-  if (isMenu)
-  {
+  if (isMenu) {
     Serial.println(gameIndex);
-    Serial.print("aaaaaa");
-    switch(gameIndex)
-    {
+    switch (gameIndex) {
+    case 0:
+      overrideState = GameState::STATE_MENU;
     case 1:
       overrideState = GameState::STATE_LEVEL_SELECT;
-      Serial.print("amogus");
-    break;
+      break;
     default:
       break;
     } // tähän voi lisää muita menuja jos niitä tulee.
-  }
-  else {
+  } else {
     overrideState = GameState::STATE_NULL;
   }
 
@@ -205,6 +214,4 @@ void GameManager::processActiveGameFrame(uint32_t deltaTime) {
   }
 }
 
-void GameManager::setScore(uint16_t score) {
-  currentScore = score;
-}
+void GameManager::setScore(uint16_t score) { currentScore = score; }

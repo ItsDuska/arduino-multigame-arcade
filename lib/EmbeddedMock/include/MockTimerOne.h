@@ -15,6 +15,9 @@ public:
   void stop();
   void restart();
 
+  // Tätä kutsutaan main loopissa simuloidaksemme ajan kulumista
+  void tick();
+
   // PWM komennot (ei implementoitu)
   void pwm(uint8_t pin, uint16_t duty);
   void setPwmDuty(uint8_t pin, uint16_t duty);

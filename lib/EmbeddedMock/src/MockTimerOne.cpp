@@ -35,6 +35,17 @@ void MockTimerOne::stop() { _running = false; }
 
 void MockTimerOne::restart() { start(); }
 
+void MockTimerOne::tick() {
+  if (!_running || _callback == NULL)
+    return;
+
+  unsigned long currentMicros = micros();
+  if (currentMicros - _lastRunTime >= _period) {
+    _lastRunTime = currentMicros;
+    _callback();
+  }
+}
+
 // Stubit PWM:lle - eivät tee simulaattorissa mitään
 void MockTimerOne::pwm(uint8_t pin, uint16_t duty) {}
 void MockTimerOne::setPwmDuty(uint8_t pin, uint16_t duty) {}

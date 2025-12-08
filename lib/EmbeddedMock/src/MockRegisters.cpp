@@ -92,3 +92,6 @@ volatile uint8_t SPDR = 0;
 volatile uint8_t DIDR0 = 0;
 volatile uint8_t DIDR1 = 0;
 volatile uint8_t DIDR2 = 0;
+
+// --- WATCHDOG ---
+volatile uint8_t WDTCSR = 0;

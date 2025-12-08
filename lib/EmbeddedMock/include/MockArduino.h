@@ -126,6 +126,16 @@ inline long random(long max) {
 
 inline void randomSeed(unsigned long seed) { srand(seed); }
 
+// --- INTERRUPTS ---
+// Nämä ovat tyhjiä funktioita, jotta koodi kääntyy PC:llä.
+inline void cli() {
+  // Simulaattorissa ei tehdä mitään
+}
+
+inline void sei() {
+  // Simulaattorissa ei tehdä mitään
+}
+
 // Arduinon map-funktion toteutus PC:lle
 inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;

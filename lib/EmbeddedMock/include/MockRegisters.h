@@ -132,3 +132,16 @@ extern volatile uint8_t SPDR;
 extern volatile uint8_t DIDR0;
 extern volatile uint8_t DIDR1; // Analog Comparator
 extern volatile uint8_t DIDR2; // ADC8 - ADC15 (Mega only)
+
+// --- WATCHDOG ---
+extern volatile uint8_t WDTCSR;
+
+// Bitit
+#define WDP0 0
+#define WDP1 1
+#define WDP2 2
+#define WDE 3
+#define WDCE 4
+#define WDP3 5
+#define WDIE 6
+#define WDIF 7

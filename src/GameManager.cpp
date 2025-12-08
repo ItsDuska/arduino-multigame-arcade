@@ -39,10 +39,36 @@ void GameManager::init() {
   Serial.print("Total games: ");
   Serial.println((int)totalGames);
 
+  // Vain oikealla raudalla koska ei PC:llä ole vahtikoiraa
+#ifndef TARGET_PC
+  // Keskeytykset pois säädön ajaksi
+  cli();
+
+  // Nollaa vahtikoira varmuuden vuoksi
+  asm volatile("wdr");
+
+  // Vaihdetaan muutostilaan. Vaaditaan muutosten tekemiseen.
+  // Kirjoita ykkönen WDCE ja WDE bitteihin.
+  WDTCSR |= (1 << WDCE) | (1 << WDE);
+
+  // Aseta uudet asetukset
+  // - WDE (System Reset Enable): Resetoi prosessori jos aika loppuu
+  // - WDP3 ja WDP0 (Prescaler): Asettaa ajaksi 8 sekuntia
+  WDTCSR = (1 << WDE) | (1 << WDP3) | (1 << WDP0);
+
+  // Keskeytykset takaisin päälle
+  sei();
+#endif
+
   currentState = GameState::STATE_MENU;
 }
 
 void GameManager::update() {
+#ifndef TARGET_PC
+  // Nollaa vahtikoira
+  asm volatile("wdr");
+#endif
+
   uint32_t currentTime = millis();
   uint32_t deltaTime = currentTime - lastUpdateTime;
   lastUpdateTime = currentTime;

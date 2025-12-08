@@ -30,10 +30,10 @@ void MazeGame::init(Arduino_GFX &gfx) {
 
   gameComplete = false;
   drawMaze(gfx);
+  enableTimer(15000, false);
 }
 
-void MazeGame::update(uint32_t deltaTime, Keyboard &keyboard,
-                      Joystick &joystick) {
+void MazeGame::update(Keyboard &keyboard, Joystick &joystick) {
   if (gameComplete)
     return;
 
@@ -107,12 +107,11 @@ void MazeGame::update(uint32_t deltaTime, Keyboard &keyboard,
 
   if (player.x == end.x && player.y == end.y) {
     gameComplete = true;
-    gameStats.gameStatus = true; // Win
-    gameStats.score = 100;
+    hasWon = true;
   }
 }
 
-void MazeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void MazeGame::render(Arduino_GFX &gfx) {
   i16Vec2 cellSize(gfx.width() / mazeSize.width,
                    gfx.height() / mazeSize.height);
 

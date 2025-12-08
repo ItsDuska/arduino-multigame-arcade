@@ -13,21 +13,25 @@ constexpr uint32_t MAX_SPAWN_INTERVAL = 500;
 constexpr uint32_t MIN_OBSTACLE_SPEED = 100;
 constexpr uint32_t MAX_OBSTACLE_SPEED = 300;
 
-// #ifdef TARGET_PC
-// float min(float a, float b) { return (a < b) ? a : b; }
-// #endif
 FallingBlocks::FallingBlocks()
-    : playerX(COLS / 2), lastSpawnTime(0), lastMoveTime(0), score(0) {}
+    : playerX(COLS / 2), lastSpawnTime(0), lastMoveTime(0) {}
 
 void FallingBlocks::init(Arduino_GFX &gfx) {
   gfx.fillScreen(COLOR_BG);
   adjustDifficulty();
+
+  enableTimer(10000, true);
 }
 
-void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
-                           Joystick &joystick) {
+void FallingBlocks::update(Keyboard &keyboard, Joystick &joystick) {
   if (gameComplete)
     return;
+
+  checkTimer();
+  if (gameComplete) {
+    hasWon = true;
+    return;
+  }
 
   memcpy(&obstaclesLastPos, &obstacles, sizeof(Obstacle) * MAX_OBSTACLES);
   lastPlayerX = playerX;
@@ -51,7 +55,7 @@ void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
   checkCollision();
 }
 
-void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void FallingBlocks::render(Arduino_GFX &gfx) {
   if (!isDirty)
     return;
 
@@ -86,16 +90,6 @@ void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
   // Piirretään pelaaja.
   gfx.drawRect(playerX * cellWidth, (ROWS - 1) * cellHeight, cellWidth,
                cellHeight, COLOR_PLAYER);
-
-  // siivotaan teksti.
-  gfx.drawRect(0, 0, 50, 20, COLOR_BG);
-
-  // TODO: PIIRRÄ MUSTA RUUTU SCOREN PÄÄLLE KOSKA EMME ENÄÄ CLEARAA RUUTUA.
-  gfx.setCursor(0, 0);
-  gfx.setTextColor(RGB565_WHITE, COLOR_BG);
-  gfx.setTextSize(1);
-  gfx.print("Score: ");
-  gfx.print(score);
 }
 
 void FallingBlocks::cleanup() {}
@@ -121,7 +115,6 @@ void FallingBlocks::moveObstacles() {
     obstacles[i].y++;
     if (obstacles[i].y >= ROWS) {
       obstacles[i].active = false;
-      score++;
     }
   }
 }
@@ -133,8 +126,7 @@ void FallingBlocks::checkCollision() {
 
     if (obstacles[i].y == ROWS - 1 && obstacles[i].x == playerX) {
       gameComplete = true;
-      gameStats.gameStatus = false;
-      gameStats.score = score;
+      hasWon = false;
       return;
     }
   }

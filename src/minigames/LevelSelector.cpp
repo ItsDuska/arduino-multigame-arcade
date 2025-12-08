@@ -20,8 +20,7 @@ void LevelSelector::init(Arduino_GFX &gfx) {
   gfx.setTextSize(2);
 }
 
-void LevelSelector::update(uint32_t deltaTime, Keyboard &keyboard,
-                           Joystick &joystick) {
+void LevelSelector::update(Keyboard &keyboard, Joystick &joystick) {
 
   while (keyboard.hasEvent()) {
     Keyboard::KeyEvent ev = keyboard.nextEvent();
@@ -69,7 +68,7 @@ void LevelSelector::update(uint32_t deltaTime, Keyboard &keyboard,
   }
 }
 
-void LevelSelector::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void LevelSelector::render(Arduino_GFX &gfx) {
   if (!isDirty) {
     return;
   }

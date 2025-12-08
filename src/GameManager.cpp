@@ -190,18 +190,21 @@ void GameManager::cleanupCurrentGame() {
 }
 
 void GameManager::updateScore() {
-  if (activeGame) {
-    GameStats stats = activeGame->getGameStatus();
-    currentScore += stats.score;
+  if (!activeGame) {
+    Serial.println("Tried updating scores but game is null.");
+    return;
+  }
+  const bool hasWon = activeGame->getGameStatus();
 
-    if (!stats.gameStatus) {
-      lostGameCount++;
-      if (lostGameCount >= maxLostGames) {
-        Serial.println("Maximum lost games reached");
-        // n määrä hävitty joten peli on kokonaan ohi. Mene takaisin Main Menuun
-        currentState = GameState::STATE_ALL_COMPLETE;
-      }
+  if (!hasWon) {
+    lostGameCount++;
+    if (lostGameCount >= maxLostGames) {
+      Serial.println("Maximum lost games reached");
+      // n määrä hävitty joten peli on kokonaan ohi. Mene takaisin Main Menuun
+      currentState = GameState::STATE_ALL_COMPLETE;
     }
+  } else {
+    currentScore++;
   }
 }
 
@@ -233,8 +236,8 @@ void GameManager::processActiveGameFrame(uint32_t deltaTime) {
     return;
   }
 
-  activeGame->update(deltaTime, keyboard, joystick);
-  activeGame->render(deltaTime, *gfx);
+  activeGame->update(keyboard, joystick);
+  activeGame->render(*gfx);
 
   if (activeGame->isComplete()) {
     if (overrideState != GameState::STATE_NULL) {

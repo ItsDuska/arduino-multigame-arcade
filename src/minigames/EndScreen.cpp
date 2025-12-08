@@ -32,16 +32,14 @@ void EndScreen::init(Arduino_GFX &gfx) {
   }
 }
 
-void EndScreen::update(uint32_t deltaTime, Keyboard &keyboard, Joystick &joystick){
+void EndScreen::update(Keyboard &keyboard, Joystick &joystick) {
   uint32_t currentTime = millis();
   if (currentTime - lastTime >= interval) {
     gameComplete = true;
   }
 }
 
-void EndScreen::render(uint32_t deltaTime, Arduino_GFX &gfx) {
-
-}
+void EndScreen::render(Arduino_GFX &gfx) {}
 
 void EndScreen::cleanup() {
   // ei tarvitse tehdä mitään täällä

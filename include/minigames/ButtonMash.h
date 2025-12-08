@@ -20,9 +20,8 @@ public:
 
   void init(Arduino_GFX &gfx) override;
 
-  void update(uint32_t deltaTime, Keyboard &keyboard,
-              Joystick &Joystick) override;
-  void render(uint32_t deltaTime, Arduino_GFX &gfx) override;
+  void update(Keyboard &keyboard, Joystick &Joystick) override;
+  void render(Arduino_GFX &gfx) override;
 
   void cleanup() override;
 

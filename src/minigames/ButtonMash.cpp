@@ -14,8 +14,7 @@ void ButtonMashGame::init(Arduino_GFX &gfx) {
   Serial.println("Press button as fast as you can!");
 }
 
-void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard,
-                            Joystick &Joystick) {
+void ButtonMashGame::update(Keyboard &keyboard, Joystick &Joystick) {
   if (gameComplete) {
     return;
   }
@@ -38,7 +37,7 @@ void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard,
   }
 }
 
-void ButtonMashGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void ButtonMashGame::render(Arduino_GFX &gfx) {
   gfx.fillScreen(RGB565_BLACK);
   gfx.setCursor(random(gfx.width()), random(gfx.height()));
   gfx.setTextColor(random(0xffff), random(0xffff));

@@ -5,13 +5,12 @@ class JoystickSpinGame : public Game {
 public:
   JoystickSpinGame();
 
-  void init(Arduino_GFX &gfx);
-  void update(uint32_t deltaTime, Keyboard &keyboard,
-              Joystick &joystick) override;
-  void render(uint32_t deltaTime, Arduino_GFX &gfx) override;
-  void cleanup();
+  void init(Arduino_GFX &gfx) override;
+  void update(Keyboard &keyboard, Joystick &joystick) override;
+  void render(Arduino_GFX &gfx) override;
+  void cleanup() override;
 
-  const char *getName();
+  const char *getName() override;
 
 private:
   enum class Stage : uint8_t { UP, RIGHT, DOWN, LEFT };

@@ -38,11 +38,13 @@ void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
 
   if (currentTime - lastSpawnTime >= spawnInterval) {
     spawnObstacle();
+    isDirty = true;
     lastSpawnTime = currentTime;
   }
 
   if (currentTime - lastMoveTime >= speed) {
     moveObstacles();
+    isDirty = true;
     lastMoveTime = currentTime;
   }
 
@@ -50,6 +52,10 @@ void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
 }
 
 void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+  if (!isDirty)
+    return;
+
+  isDirty = false; // resetoidaan lippu
 
   int cellWidth = gfx.width() / COLS;
   int cellHeight = gfx.height() / ROWS;
@@ -138,10 +144,14 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
   while (keyboard.hasEvent()) {
     Keyboard::KeyEvent ev = keyboard.nextEvent();
     if (ev.type == Keyboard::KeyEvent::Type::PRESS) {
-      if (ev.key == '7' && playerX > 0)
+      if (ev.key == '7' && playerX > 0) {
         playerX--;
-      if (ev.key == '9' && playerX < COLS - 1)
+        isDirty = true;
+      }
+      if (ev.key == '9' && playerX < COLS - 1) {
         playerX++;
+        isDirty = true;
+      }
     }
   }
 
@@ -170,6 +180,7 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
     }
 
     if (moved) {
+      isDirty = true;
       lastInputTime = currentTime;
     }
   }

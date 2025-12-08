@@ -36,6 +36,8 @@ private:
   u8Vec2 start;
   u8Vec2 end;
   bool mazeDrawn;
+
+  bool isDirty = true;
   uint32_t lastInputTime = 0;
   const uint32_t INPUT_DELAY = 100;
 };

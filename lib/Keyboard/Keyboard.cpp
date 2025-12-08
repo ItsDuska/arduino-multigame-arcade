@@ -49,8 +49,6 @@ void Keyboard::update() {
     ev.key = keyChar;
     ev.type = KeyEvent::Type::PRESS;
 
-    Serial.println(ev.key);
-
     uint8_t next = (head + 1) % MAX_EVENTS;
     if (next != tail) {
       buffer[head] = ev;

@@ -7,7 +7,7 @@
 
 class ButtonMashGame : public Game {
 private:
-  const uint8_t BUTTON_PIN = 2;
+  const uint8_t BUTTON_PIN = 3;
   const uint16_t GAME_DURATION = 10000; // 10 seconds
 
   uint16_t score;

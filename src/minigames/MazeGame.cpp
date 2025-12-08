@@ -31,11 +31,14 @@ void MazeGame::init(Arduino_GFX &gfx) {
   gameComplete = false;
   drawMaze(gfx);
   enableTimer(15000, false);
+  this->setupInterupt();
 }
 
 void MazeGame::update(Keyboard &keyboard, Joystick &joystick) {
-  if (gameComplete)
+  checkTimer();
+  if (gameComplete) {
     return;
+  }
 
   oldPlayer = player;
 
@@ -106,8 +109,8 @@ void MazeGame::update(Keyboard &keyboard, Joystick &joystick) {
   }
 
   if (player.x == end.x && player.y == end.y) {
-    gameComplete = true;
-    hasWon = true;
+    this->overrideWinOrLoss = true;
+    digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
   }
 }
 

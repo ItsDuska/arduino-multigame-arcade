@@ -1,3 +1,5 @@
+#include "MockArduino.h"
+#include "minigames/GameInterface.h"
 #include <minigames/FallingBlocks.h>
 
 constexpr uint16_t COLOR_BG = RGB565_BLACK;
@@ -19,19 +21,15 @@ FallingBlocks::FallingBlocks()
 void FallingBlocks::init(Arduino_GFX &gfx) {
   gfx.fillScreen(COLOR_BG);
   adjustDifficulty();
+  this->setupInterupt();
 
   enableTimer(10000, true);
 }
 
 void FallingBlocks::update(Keyboard &keyboard, Joystick &joystick) {
+  checkTimer();
   if (gameComplete)
     return;
-
-  checkTimer();
-  if (gameComplete) {
-    hasWon = true;
-    return;
-  }
 
   memcpy(&obstaclesLastPos, &obstacles, sizeof(Obstacle) * MAX_OBSTACLES);
   lastPlayerX = playerX;
@@ -125,8 +123,8 @@ void FallingBlocks::checkCollision() {
       continue;
 
     if (obstacles[i].y == ROWS - 1 && obstacles[i].x == playerX) {
-      gameComplete = true;
-      hasWon = false;
+      this->overrideWinOrLoss = false;
+      digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
       return;
     }
   }

@@ -9,6 +9,7 @@ void ButtonMashGame::init(Arduino_GFX &gfx) {
   startTime = millis();
   gameComplete = false;
   lastButtonState = digitalRead(BUTTON_PIN);
+  this->setupInterupt();
 
   Serial.println("=== BUTTON MASH ===");
   Serial.println("Press button as fast as you can!");

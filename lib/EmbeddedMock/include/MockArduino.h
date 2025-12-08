@@ -1,12 +1,13 @@
 #pragma once
 
+#include "MockRegisters.h"
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>
+#include <functional>
 #include <iostream>
+#include <map>
 #include <thread>
-
-#include "MockRegisters.h"
 
 // --- VAKIOT ---
 #define INPUT 0
@@ -15,6 +16,9 @@
 
 #define LOW 0
 #define HIGH 1
+
+// ei mitää hajua mikä tää on alunperin mutta sillä ei pitäis olla väliä kai.
+#define FALLING 0
 
 // --- PINNIT (Arduino Mega mapattuna) ---
 #define A0 54
@@ -58,6 +62,8 @@ public:
 
 extern MockSerial Serial;
 
+inline std::map<uint8_t, std::function<void()>> interruptMap;
+
 // --- TIME ---
 inline std::chrono::steady_clock::time_point getStartTime() {
   static auto start = std::chrono::steady_clock::now();
@@ -86,12 +92,46 @@ inline void delayMicroseconds(unsigned int us) {
   std::this_thread::sleep_for(std::chrono::microseconds(us));
 }
 
+inline uint8_t digitalPinToInterrupt(uint8_t pin) {
+  switch (pin) {
+  case 2:
+    return 0;
+  case 3:
+    return 1;
+  case 21:
+    return 2;
+  case 20:
+    return 3;
+  case 19:
+    return 4;
+  case 18:
+    return 5;
+  default:
+    return 99; // ei ole tuettu pinni luku
+  }
+}
+
+// -- INTERUPT --
+inline void attachInterrupt(uint8_t interruptNum, std::function<void()> ISR,
+                            uint8_t mode) {
+  interruptMap[interruptNum] = ISR;
+}
+
+inline void triggerInterrupt(uint8_t pin) {
+  uint8_t interruptNum = digitalPinToInterrupt(pin);
+  if (interruptMap.find(interruptNum) != interruptMap.end()) {
+    interruptMap[interruptNum]();
+  } else {
+    std::cout << "No ISR attached to pin " << pin << std::endl;
+  }
+}
+
 // --- IO ---
 inline void pinMode(uint8_t pin, uint8_t mode) {
   // Ei tehdä mitään, tai voidaan logata
 }
 
-inline void digitalWrite(uint8_t pin, uint8_t value) {}
+inline void digitalWrite(uint8_t pin, uint8_t value) { triggerInterrupt(pin); }
 
 inline int digitalRead(uint8_t pin) {
   return HIGH; // Oletuksena napit ylhäällä (INPUT_PULLUP)

@@ -5,6 +5,8 @@
 #include <Joystick.h>
 #include <Keyboard.h>
 
+constexpr uint8_t GAME_OVER_INTERUPT_PIN = 2;
+
 class Game {
 public:
   virtual ~Game() = default;
@@ -23,16 +25,26 @@ public:
 
   virtual const char *getName() { return ""; }
 
+  void handleGameOver(); // interuptia varten
+
+public:
+  static Game *instance;
+
 protected:
   void enableTimer(uint32_t durationMs, bool winOnExpire);
   void checkTimer();
+
+  void setupInterupt();
 
 protected:
   bool hasWon = false;
   bool gameComplete = false;
   bool useTimer = false;
   uint32_t timerDuration = 0;
-  bool winOnTimeout = false;
+  // tällä voidaan overridea että tullaanko voittaan vai ei esim jos
+  // pelaaja osuu esteeseen. Vähän likainen tapa mutta interuptien takia se on
+  // näin.
+  bool overrideWinOrLoss = false;
 };
 
 #endif

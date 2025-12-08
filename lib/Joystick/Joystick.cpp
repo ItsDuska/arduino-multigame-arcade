@@ -65,7 +65,7 @@ bool Joystick::isJoystickDown() {
 #ifdef TARGET_PC
   buttonDown = MockInputState::joyBtn;
 #else
-  buttonDown = !(bool)digitalRead(pinC);
+  buttonDown = !(PINF & 0b00000100);
 #endif
   return buttonDown;
 }

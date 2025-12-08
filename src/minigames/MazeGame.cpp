@@ -121,7 +121,7 @@ void MazeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
                cellSize.width, cellSize.height, COLOR_BG);
 
   // piirrä uus pelaaja.
-  gfx.drawRect(player.x * cellSize.width, player.y * cellSize.height,
+  gfx.fillRect(player.x * cellSize.width, player.y * cellSize.height,
                cellSize.width, cellSize.height, COLOR_PLAYER);
 }
 

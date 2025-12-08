@@ -1,7 +1,8 @@
+#include "MockDisplay.h"
 #include <minigames/FallingBlocks.h>
 
 constexpr uint16_t COLOR_BG = RGB565_BLACK;
-constexpr uint16_t COLOR_PLAYER = RGB565_GREEN;
+constexpr uint16_t COLOR_PLAYER = RGB565_BLUE;
 constexpr uint16_t COLOR_OBSTACLE = RGB565_RED;
 
 constexpr int ROWS = 12;

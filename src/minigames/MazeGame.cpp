@@ -1,5 +1,4 @@
 #include "Vec2.h"
-#include <cstdint>
 #include <minigames/MazeGame.h>
 
 constexpr uint16_t COLOR_BG = RGB565_BLACK;

@@ -148,17 +148,30 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
   joystick.update();
   joystick.getPosition();
   Joystick::Direction dir = joystick.convertPositionToDirection();
-  switch (dir) {
-  case Joystick::Direction::LEFT:
-    if (playerX > 0)
-      playerX--;
-    break;
-  case Joystick::Direction::RIGHT:
-    if (playerX < COLS - 1)
-      playerX++;
-    break;
-  default:
-    break;
+
+  uint32_t currentTime = millis();
+
+  if (currentTime - lastInputTime > INPUT_DELAY) {
+    bool moved = false;
+
+    switch (dir) {
+    case Joystick::Direction::LEFT:
+      if (playerX > 0)
+        playerX--;
+      moved = true;
+      break;
+    case Joystick::Direction::RIGHT:
+      if (playerX < COLS - 1)
+        playerX++;
+      moved = true;
+      break;
+    default:
+      break;
+    }
+
+    if (moved) {
+      lastInputTime = currentTime;
+    }
   }
 }
 // Mitä enemmän pelejä on pelattu, sitä nopeampi peli

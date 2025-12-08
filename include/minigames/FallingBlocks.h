@@ -37,4 +37,6 @@ private:
   uint16_t speed;
   uint32_t spawnInterval;
   uint16_t gamesPlayed = 1;
+  uint32_t lastInputTime = 0;
+  const uint32_t INPUT_DELAY = 100;
 };

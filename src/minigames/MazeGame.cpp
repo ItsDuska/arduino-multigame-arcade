@@ -71,27 +71,39 @@ void MazeGame::update(uint32_t deltaTime, Keyboard &keyboard,
   joystick.getPosition();
   Joystick::Direction dir = joystick.convertPositionToDirection();
 
-  switch (dir) {
-  case Joystick::Direction::LEFT:
-    if (player.x > 0 && getCell(player.x - 1, player.y) != CellType::BLOCK)
-      player.x--;
-    break;
-  case Joystick::Direction::RIGHT:
-    if (player.x < mazeSize.width - 1 &&
-        getCell(player.x + 1, player.y) != CellType::BLOCK)
-      player.x++;
-    break;
-  case Joystick::Direction::UP:
-    if (player.y > 0 && getCell(player.x, player.y - 1) != CellType::BLOCK)
-      player.y--;
-    break;
-  case Joystick::Direction::DOWN:
-    if (player.y < mazeSize.height - 1 &&
-        getCell(player.x, player.y + 1) != CellType::BLOCK)
-      player.y++;
-    break;
-  default:
-    break;
+  uint32_t currentTime = millis();
+
+  if (currentTime - lastInputTime > INPUT_DELAY) {
+    bool moved = false;
+    switch (dir) {
+    case Joystick::Direction::LEFT:
+      if (player.x > 0 && getCell(player.x - 1, player.y) != CellType::BLOCK)
+        player.x--;
+      moved = true;
+      break;
+    case Joystick::Direction::RIGHT:
+      if (player.x < mazeSize.width - 1 &&
+          getCell(player.x + 1, player.y) != CellType::BLOCK)
+        player.x++;
+      moved = true;
+      break;
+    case Joystick::Direction::UP:
+      if (player.y > 0 && getCell(player.x, player.y - 1) != CellType::BLOCK)
+        player.y--;
+      moved = true;
+      break;
+    case Joystick::Direction::DOWN:
+      if (player.y < mazeSize.height - 1 &&
+          getCell(player.x, player.y + 1) != CellType::BLOCK)
+        player.y++;
+      moved = true;
+      break;
+    default:
+      break;
+    }
+    if (moved) {
+      lastInputTime = currentTime;
+    }
   }
 
   if (player.x == end.x && player.y == end.y) {

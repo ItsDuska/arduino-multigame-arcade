@@ -24,8 +24,7 @@ void ReactionTimeGame::init(Arduino_GFX &gfx) {
   Timer1.attachInterrupt(reactionTimerISR);
 };
 
-void ReactionTimeGame::update(uint32_t deltaTime, Keyboard &keyboard,
-                              Joystick &joystick) {
+void ReactionTimeGame::update(Keyboard &keyboard, Joystick &joystick) {
   if (gameComplete)
     return;
 
@@ -104,7 +103,7 @@ void ReactionTimeGame::update(uint32_t deltaTime, Keyboard &keyboard,
   }
 }
 
-void ReactionTimeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void ReactionTimeGame::render(Arduino_GFX &gfx) {
   const int screenWidth = gfx.width();
   const int titleX = 50;
   const int titleY = 40;
@@ -112,8 +111,10 @@ void ReactionTimeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
   switch (phase) {
   case START:
     gfx.fillScreen(RGB565_BLACK);
-    gfx.setCursor(titleX, titleY);
+    gfx.setCursor(titleX + 20, titleY);
     gfx.print("Valmistaudu...");
+    gfx.setCursor(titleX - 20, titleY + 30);
+    gfx.print("Painettava nappi on *");
 
     // Piirretään laskuri
     gfx.setTextSize(4);
@@ -138,6 +139,8 @@ void ReactionTimeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
       gfx.print("Reaktioaika: ");
       gfx.print(reactionTime);
       gfx.print(" ms");
+      gfx.setCursor(titleX, titleY + 100);
+      gfx.print("Paina * jatkaaksesi");
       speedDisplayed = true;
     }
     break;

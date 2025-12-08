@@ -5,11 +5,7 @@
 #include <Joystick.h>
 #include <Keyboard.h>
 
-struct GameStats {
-  uint16_t score = 0;
-  bool gameStatus = false; // win or a loss
-  uint8_t flags; // voi käyttää tarvittaessa johonkin. Muuten tällä ei ole väliä
-};
+constexpr uint8_t GAME_OVER_INTERUPT_PIN = 2;
 
 class Game {
 public:
@@ -17,23 +13,38 @@ public:
 
   virtual void init(Arduino_GFX &gfx) = 0;
 
-  // deltaTime on millisekuntteina viime päivityksestä
-  virtual void update(uint32_t deltaTime, Keyboard &keyboard,
-                      Joystick &Joystick) = 0;
+  virtual void update(Keyboard &keyboard, Joystick &Joystick) = 0;
 
-  virtual void render(uint32_t deltaTime, Arduino_GFX &gfx) = 0;
+  virtual void render(Arduino_GFX &gfx) = 0;
 
   virtual void cleanup() = 0;
 
   bool isComplete() const { return gameComplete; }
 
-  GameStats getGameStatus() const { return gameStats; }
+  bool getGameStatus() const { return hasWon; }
 
   virtual const char *getName() { return ""; }
 
+  void handleGameOver(); // interuptia varten
+
+public:
+  static Game *instance;
+
 protected:
-  GameStats gameStats;
+  void enableTimer(uint32_t durationMs, bool winOnExpire);
+  void checkTimer();
+
+  void setupInterupt();
+
+protected:
+  bool hasWon = false;
   bool gameComplete = false;
+  bool useTimer = false;
+  uint32_t timerDuration = 0;
+  // tällä voidaan overridea että tullaanko voittaan vai ei esim jos
+  // pelaaja osuu esteeseen. Vähän likainen tapa mutta interuptien takia se on
+  // näin.
+  bool overrideWinOrLoss = false;
 };
 
 #endif

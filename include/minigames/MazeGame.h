@@ -10,9 +10,8 @@ public:
   ~MazeGame();
 
   void init(Arduino_GFX &gfx) override;
-  void update(uint32_t deltaTime, Keyboard &keyboard,
-              Joystick &joystick) override;
-  void render(uint32_t deltaTime, Arduino_GFX &gfx) override;
+  void update(Keyboard &keyboard, Joystick &joystick) override;
+  void render(Arduino_GFX &gfx) override;
   void cleanup() override;
 
   const char *getName() override;
@@ -36,6 +35,8 @@ private:
   u8Vec2 start;
   u8Vec2 end;
   bool mazeDrawn;
+
+  bool isDirty = true;
   uint32_t lastInputTime = 0;
   const uint32_t INPUT_DELAY = 100;
 };

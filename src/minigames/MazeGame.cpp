@@ -3,8 +3,7 @@
 
 constexpr uint16_t COLOR_BG = RGB565_BLACK;
 constexpr uint16_t COLOR_WALL = RGB565_BLUE;
-constexpr uint16_t COLOR_PLAYER = RGB565_GREEN;
-constexpr uint16_t COLOR_START = RGB565_YELLOW;
+constexpr uint16_t COLOR_PLAYER = RGB565_YELLOW;
 constexpr uint16_t COLOR_END = RGB565_RED;
 constexpr uint16_t COLOR_PATH = COLOR_BG;
 
@@ -31,12 +30,15 @@ void MazeGame::init(Arduino_GFX &gfx) {
 
   gameComplete = false;
   drawMaze(gfx);
+  enableTimer(15000, false);
+  this->setupInterupt();
 }
 
-void MazeGame::update(uint32_t deltaTime, Keyboard &keyboard,
-                      Joystick &joystick) {
-  if (gameComplete)
+void MazeGame::update(Keyboard &keyboard, Joystick &joystick) {
+  checkTimer();
+  if (gameComplete) {
     return;
+  }
 
   oldPlayer = player;
 
@@ -101,27 +103,31 @@ void MazeGame::update(uint32_t deltaTime, Keyboard &keyboard,
       break;
     }
     if (moved) {
+      isDirty = true;
       lastInputTime = currentTime;
     }
   }
 
   if (player.x == end.x && player.y == end.y) {
-    gameComplete = true;
-    gameStats.gameStatus = true; // Win
-    gameStats.score = 100;
+    this->overrideWinOrLoss = true;
+    digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
   }
 }
 
-void MazeGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void MazeGame::render(Arduino_GFX &gfx) {
   i16Vec2 cellSize(gfx.width() / mazeSize.width,
                    gfx.height() / mazeSize.height);
 
+  if (!isDirty)
+    return;
+
+  isDirty = false; // resetoidaan lippu
   // poista vanha pelaaja.
   gfx.fillRect(oldPlayer.x * cellSize.width, oldPlayer.y * cellSize.height,
                cellSize.width, cellSize.height, COLOR_BG);
 
   // piirrä uus pelaaja.
-  gfx.drawRect(player.x * cellSize.width, player.y * cellSize.height,
+  gfx.fillRect(player.x * cellSize.width, player.y * cellSize.height,
                cellSize.width, cellSize.height, COLOR_PLAYER);
 }
 
@@ -137,9 +143,6 @@ void MazeGame::drawMaze(Arduino_GFX &gfx) {
       switch (cell) {
       case CellType::BLOCK:
         color = COLOR_WALL;
-        break;
-      case CellType::START:
-        color = COLOR_START;
         break;
       case CellType::END:
         color = COLOR_END;

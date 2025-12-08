@@ -39,10 +39,36 @@ void GameManager::init() {
   Serial.print("Total games: ");
   Serial.println((int)totalGames);
 
+  // Vain oikealla raudalla koska ei PC:llä ole vahtikoiraa
+#ifndef TARGET_PC
+  // Keskeytykset pois säädön ajaksi
+  cli();
+
+  // Nollaa vahtikoira varmuuden vuoksi
+  asm volatile("wdr");
+
+  // Vaihdetaan muutostilaan. Vaaditaan muutosten tekemiseen.
+  // Kirjoita ykkönen WDCE ja WDE bitteihin.
+  WDTCSR |= (1 << WDCE) | (1 << WDE);
+
+  // Aseta uudet asetukset
+  // - WDE (System Reset Enable): Resetoi prosessori jos aika loppuu
+  // - WDP3 ja WDP0 (Prescaler): Asettaa ajaksi 8 sekuntia
+  WDTCSR = (1 << WDE) | (1 << WDP3) | (1 << WDP0);
+
+  // Keskeytykset takaisin päälle
+  sei();
+#endif
+
   currentState = GameState::STATE_MENU;
 }
 
 void GameManager::update() {
+#ifndef TARGET_PC
+  // Nollaa vahtikoira
+  asm volatile("wdr");
+#endif
+
   uint32_t currentTime = millis();
   uint32_t deltaTime = currentTime - lastUpdateTime;
   lastUpdateTime = currentTime;
@@ -164,18 +190,21 @@ void GameManager::cleanupCurrentGame() {
 }
 
 void GameManager::updateScore() {
-  if (activeGame) {
-    GameStats stats = activeGame->getGameStatus();
-    currentScore += stats.score;
+  if (!activeGame) {
+    Serial.println("Tried updating scores but game is null.");
+    return;
+  }
+  const bool hasWon = activeGame->getGameStatus();
 
-    if (!stats.gameStatus) {
-      lostGameCount++;
-      if (lostGameCount >= maxLostGames) {
-        Serial.println("Maximum lost games reached");
-        // n määrä hävitty joten peli on kokonaan ohi. Mene takaisin Main Menuun
-        currentState = GameState::STATE_ALL_COMPLETE;
-      }
+  if (!hasWon) {
+    lostGameCount++;
+    if (lostGameCount >= maxLostGames) {
+      Serial.println("Maximum lost games reached");
+      // n määrä hävitty joten peli on kokonaan ohi. Mene takaisin Main Menuun
+      currentState = GameState::STATE_ALL_COMPLETE;
     }
+  } else {
+    currentScore++;
   }
 }
 
@@ -207,8 +236,8 @@ void GameManager::processActiveGameFrame(uint32_t deltaTime) {
     return;
   }
 
-  activeGame->update(deltaTime, keyboard, joystick);
-  activeGame->render(deltaTime, *gfx);
+  activeGame->update(keyboard, joystick);
+  activeGame->render(*gfx);
 
   if (activeGame->isComplete()) {
     if (overrideState != GameState::STATE_NULL) {

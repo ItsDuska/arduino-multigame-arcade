@@ -1,7 +1,9 @@
+#include "MockArduino.h"
+#include "minigames/GameInterface.h"
 #include <minigames/FallingBlocks.h>
 
 constexpr uint16_t COLOR_BG = RGB565_BLACK;
-constexpr uint16_t COLOR_PLAYER = RGB565_GREEN;
+constexpr uint16_t COLOR_PLAYER = RGB565_BLUE;
 constexpr uint16_t COLOR_OBSTACLE = RGB565_RED;
 
 constexpr int ROWS = 12;
@@ -13,19 +15,19 @@ constexpr uint32_t MAX_SPAWN_INTERVAL = 500;
 constexpr uint32_t MIN_OBSTACLE_SPEED = 100;
 constexpr uint32_t MAX_OBSTACLE_SPEED = 300;
 
-// #ifdef TARGET_PC
-// float min(float a, float b) { return (a < b) ? a : b; }
-// #endif
 FallingBlocks::FallingBlocks()
-    : playerX(COLS / 2), lastSpawnTime(0), lastMoveTime(0), score(0) {}
+    : playerX(COLS / 2), lastSpawnTime(0), lastMoveTime(0) {}
 
 void FallingBlocks::init(Arduino_GFX &gfx) {
   gfx.fillScreen(COLOR_BG);
   adjustDifficulty();
+  this->setupInterupt();
+
+  enableTimer(10000, true);
 }
 
-void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
-                           Joystick &joystick) {
+void FallingBlocks::update(Keyboard &keyboard, Joystick &joystick) {
+  checkTimer();
   if (gameComplete)
     return;
 
@@ -38,18 +40,24 @@ void FallingBlocks::update(uint32_t deltaTime, Keyboard &keyboard,
 
   if (currentTime - lastSpawnTime >= spawnInterval) {
     spawnObstacle();
+    isDirty = true;
     lastSpawnTime = currentTime;
   }
 
   if (currentTime - lastMoveTime >= speed) {
     moveObstacles();
+    isDirty = true;
     lastMoveTime = currentTime;
   }
 
   checkCollision();
 }
 
-void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void FallingBlocks::render(Arduino_GFX &gfx) {
+  if (!isDirty)
+    return;
+
+  isDirty = false; // resetoidaan lippu
 
   int cellWidth = gfx.width() / COLS;
   int cellHeight = gfx.height() / ROWS;
@@ -80,16 +88,6 @@ void FallingBlocks::render(uint32_t deltaTime, Arduino_GFX &gfx) {
   // Piirretään pelaaja.
   gfx.drawRect(playerX * cellWidth, (ROWS - 1) * cellHeight, cellWidth,
                cellHeight, COLOR_PLAYER);
-
-  // siivotaan teksti.
-  gfx.drawRect(0, 0, 50, 20, COLOR_BG);
-
-  // TODO: PIIRRÄ MUSTA RUUTU SCOREN PÄÄLLE KOSKA EMME ENÄÄ CLEARAA RUUTUA.
-  gfx.setCursor(0, 0);
-  gfx.setTextColor(RGB565_WHITE, COLOR_BG);
-  gfx.setTextSize(1);
-  gfx.print("Score: ");
-  gfx.print(score);
 }
 
 void FallingBlocks::cleanup() {}
@@ -115,7 +113,6 @@ void FallingBlocks::moveObstacles() {
     obstacles[i].y++;
     if (obstacles[i].y >= ROWS) {
       obstacles[i].active = false;
-      score++;
     }
   }
 }
@@ -126,9 +123,8 @@ void FallingBlocks::checkCollision() {
       continue;
 
     if (obstacles[i].y == ROWS - 1 && obstacles[i].x == playerX) {
-      gameComplete = true;
-      gameStats.gameStatus = false;
-      gameStats.score = score;
+      this->overrideWinOrLoss = false;
+      digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
       return;
     }
   }
@@ -138,10 +134,14 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
   while (keyboard.hasEvent()) {
     Keyboard::KeyEvent ev = keyboard.nextEvent();
     if (ev.type == Keyboard::KeyEvent::Type::PRESS) {
-      if (ev.key == '7' && playerX > 0)
+      if (ev.key == '7' && playerX > 0) {
         playerX--;
-      if (ev.key == '9' && playerX < COLS - 1)
+        isDirty = true;
+      }
+      if (ev.key == '9' && playerX < COLS - 1) {
         playerX++;
+        isDirty = true;
+      }
     }
   }
 
@@ -170,6 +170,7 @@ void FallingBlocks::handlePlayerInput(Keyboard &keyboard, Joystick &joystick) {
     }
 
     if (moved) {
+      isDirty = true;
       lastInputTime = currentTime;
     }
   }

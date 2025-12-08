@@ -14,8 +14,7 @@ void JoystickSpinGame::init(Arduino_GFX &gfx) {
   Serial.println("UP → RIGHT → DOWN → LEFT → UP");
 }
 
-void JoystickSpinGame::update(uint32_t deltaTime, Keyboard &Keyboard,
-                              Joystick &joystick) {
+void JoystickSpinGame::update(Keyboard &Keyboard, Joystick &joystick) {
   if (gameComplete)
     return;
 
@@ -56,7 +55,7 @@ void JoystickSpinGame::update(uint32_t deltaTime, Keyboard &Keyboard,
   }
 }
 
-void JoystickSpinGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {}
+void JoystickSpinGame::render(Arduino_GFX &gfx) {}
 
 void JoystickSpinGame::cleanup() {
   // Nothing necessary here

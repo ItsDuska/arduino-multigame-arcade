@@ -29,4 +29,5 @@
 #include <Arduino_GFX_Library.h>
 #include <EEPROM.h>
 #include <TimerOne.h>
+#include <avr/interrupt.h>
 #endif

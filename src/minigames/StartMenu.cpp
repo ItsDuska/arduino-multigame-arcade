@@ -20,8 +20,7 @@ void StartMenu::init(Arduino_GFX &gfx) {
   isDirty = true;
 }
 
-void StartMenu::update(uint32_t deltaTime, Keyboard &keyboard,
-                       Joystick &joystick) {
+void StartMenu::update(Keyboard &keyboard, Joystick &joystick) {
   keyboard.update();
 
   while (keyboard.hasEvent()) {
@@ -97,7 +96,7 @@ void StartMenu::update(uint32_t deltaTime, Keyboard &keyboard,
   }
 }
 
-void StartMenu::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void StartMenu::render(Arduino_GFX &gfx) {
   if (!isDirty) {
     return;
   }

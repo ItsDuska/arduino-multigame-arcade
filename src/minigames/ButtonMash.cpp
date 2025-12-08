@@ -13,12 +13,13 @@ void ButtonMashGame::init(Arduino_GFX &gfx) {
   gfx.fillScreen(RGB565_BLACK);
   gfx.setTextColor(RGB565_WHITE);
   gfx.setTextSize(TEXT_SIZE);
+  previousMillis = millis();
 }
 
-void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard, Joystick &Joystick) {
+void ButtonMashGame::update(Keyboard &keyboard, Joystick &Joystick) {
+  currentMillis = millis();
   switch (state) {
     case COUNTDOWN: {
-      currentMillis += deltaTime;
       if (countdown > 0) {
         if (currentMillis - previousMillis >= 1000) {
             previousMillis += 1000;
@@ -30,15 +31,13 @@ void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard, Joystick &Jo
       } else {
         if (currentMillis - previousMillis >= 1000) {
           state = PLAYING;
+          previousMillis = currentMillis;
         }
       }
       break;
     }
 
     case PLAYING: {
-      // Accumulate elapsed time in the playing phase
-      currentMillis += deltaTime;
-
       // Consume keyboard events and count presses
       while (keyboard.hasEvent()) {
       Keyboard::KeyEvent ev = keyboard.nextEvent();
@@ -46,17 +45,15 @@ void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard, Joystick &Jo
           if (keyPresses < 30) {
           keyPresses++;
           }
-      }
+        }
       }
 
       // End conditions: either reached 30 or ran out of time
       const bool success = (keyPresses >= 30);
-      const bool timeUp = (currentMillis >= GAME_DURATION);
+      const bool timeUp = (currentMillis - previousMillis >= GAME_DURATION);
       if (success || timeUp) {
+        hasWon = success;
         state = GAMEOVER;
-        // Report results
-        gameStats.score = keyPresses;
-        gameStats.gameStatus = success;
       }
       break;
     }
@@ -70,7 +67,7 @@ void ButtonMashGame::update(uint32_t deltaTime, Keyboard &keyboard, Joystick &Jo
   }
 }
 
-void ButtonMashGame::render(uint32_t deltaTime, Arduino_GFX &gfx) {
+void ButtonMashGame::render(Arduino_GFX &gfx) {
   switch(state) {
     case COUNTDOWN: {
       gfx.fillScreen(RGB565_BLACK);

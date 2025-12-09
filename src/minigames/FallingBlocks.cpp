@@ -123,7 +123,7 @@ void FallingBlocks::checkCollision() {
 
     if (obstacles[i].y == ROWS - 1 && obstacles[i].x == playerX) {
       this->overrideWinOrLoss = false;
-      digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
+      digitalWrite(GAME_OVER_INTERUPT_PIN, LOW);
       return;
     }
   }

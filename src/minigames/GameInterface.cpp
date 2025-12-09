@@ -31,6 +31,6 @@ void Game::checkTimer() {
   }
 
   if (millis() >= timerDuration) {
-    digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
+    digitalWrite(GAME_OVER_INTERUPT_PIN, LOW);
   }
 }

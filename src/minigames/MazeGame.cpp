@@ -110,7 +110,8 @@ void MazeGame::update(Keyboard &keyboard, Joystick &joystick) {
 
   if (player.x == end.x && player.y == end.y) {
     this->overrideWinOrLoss = true;
-    digitalWrite(GAME_OVER_INTERUPT_PIN, HIGH);
+    pinMode(GAME_OVER_INTERUPT_PIN, OUTPUT);
+    digitalWrite(GAME_OVER_INTERUPT_PIN, LOW);
   }
 }
 

@@ -4,10 +4,8 @@
 constexpr char gameName[] = "LEVEL SELECTOR";
 constexpr uint8_t MENU_NAME_LEN = sizeof(gameName) - 1;
 
-constexpr const char *gameStrings[] = {
-    "Falling Blocks", "Reaction Game", "Maze Game", "Button Smash",
-    "Kalastus", // Stardew valley fishig minigame
-    "Muisti Peli",    "Dino Peli"};
+constexpr const char *gameStrings[] = {"Falling Blocks", "Reaction Game",
+                                       "Maze Game", "Button Smash"};
 
 constexpr uint8_t MENU_STRINGS_COUNT =
     sizeof(gameStrings) / sizeof(gameStrings[0]);

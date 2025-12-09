@@ -196,6 +196,12 @@ void GameManager::updateScore() {
   }
   const bool hasWon = activeGame->getGameStatus();
 
+  if (hasWon) {
+    Serial.println(">>> PELI VOITETTU! <<<");
+  } else {
+    Serial.println(">>> PELI HÄVITTY! <<<");
+  }
+
   if (!hasWon) {
     lostGameCount++;
     if (lostGameCount >= maxLostGames) {

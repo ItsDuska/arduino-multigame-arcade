@@ -14,6 +14,7 @@ void Game::setupInterupt() {
                   interuptGameOver, FALLING);
   instance = this;
 }
+
 void Game::handleGameOver() {
   gameComplete = true;
   hasWon = overrideWinOrLoss;

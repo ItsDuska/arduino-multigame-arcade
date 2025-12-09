@@ -17,6 +17,9 @@ void ButtonMashGame::init(Arduino_GFX &gfx) {
 }
 
 void ButtonMashGame::update(Keyboard &keyboard, Joystick &Joystick) {
+  if (gameComplete)
+    return;
+
   currentMillis = millis();
   switch (state) {
   case COUNTDOWN: {
@@ -63,6 +66,9 @@ void ButtonMashGame::update(Keyboard &keyboard, Joystick &Joystick) {
   }
 
   case GAMEOVER:
+    if (!hasWon)
+      this->overrideWinOrLoss = false;
+
     gameComplete = true;
     break;
 
@@ -101,24 +107,19 @@ void ButtonMashGame::render(Arduino_GFX &gfx) {
       initialRender = true;
     }
 
-    // --- PÄIVITYSLOGIIKKA ---
-
-    // 1. Rakennetaan teksti: "NYKYINEN / TAVOITE"
     // Huom: Tavoite on kovakoodattu 30, koska update-loopissa oli raja 30.
     String statusText = String(keyPresses) + "/30";
 
-    // 2. Määrittele pyyhittävä alue keskellä ruutua.
-    // TEXT_SIZE 4 on n. 32px korkea. "30/30" on n. 120px leveä.
     // Otetaan reilu alue varmuuden vuoksi.
     int clearW = 200;
     int clearH = 50;
     int clearX = (gfx.width() - clearW) / 2;
     int clearY = (gfx.height() - clearH) / 2;
 
-    // 3. Piirrä musta laatikko tekstin alle (pyyhkii vanhan)
+    // Piirrä musta laatikko tekstin alle (pyyhkii vanhan)
     gfx.fillRect(clearX, clearY, clearW, clearH, RGB565_BLACK);
 
-    // 4. Piirrä uusi yhdistetty teksti
+    // Piirrä uusi yhdistetty teksti
     gfx.setTextColor(RGB565_WHITE);
     utilityPrintCenter(gfx, statusText.c_str(), TEXT_SIZE, 0, 0);
     break;

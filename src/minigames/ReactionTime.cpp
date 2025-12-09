@@ -62,6 +62,11 @@ void ReactionTimeGame::update(Keyboard &keyboard, Joystick &joystick) {
       timerFired = false;
       Timer1.stop(); // Pysäytetään TimerOne, mittaus alkaa nyt
 
+      keyboard.update();
+      while (keyboard.hasEvent()) {
+        keyboard.nextEvent(); // Tyhjennetään puskuri
+      }
+
       phaseStartTime = millis();
       phase = REACTSCREEN;
       initialRender = false;
@@ -88,6 +93,11 @@ void ReactionTimeGame::update(Keyboard &keyboard, Joystick &joystick) {
     while (keyboard.hasEvent()) {
       Keyboard::KeyEvent ev = keyboard.nextEvent();
       if (ev.type == Keyboard::KeyEvent::Type::PRESS) {
+        if (reactionTime > 700) {
+          this->overrideWinOrLoss = false;
+          gameComplete = true;
+        }
+
         testCount++;
 
         if (testCount < TEST_ROUNDS) {
@@ -109,6 +119,7 @@ void ReactionTimeGame::update(Keyboard &keyboard, Joystick &joystick) {
     break;
 
   case COMPLETE:
+    hasWon = true;
     gameComplete = true;
     break;
 
